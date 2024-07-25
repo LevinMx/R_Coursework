@@ -1,0 +1,564 @@
+---
+title: |
+  | BIOSTAT 306 R Programming
+  | Final
+author: Minxing Huang
+date: 'Due: **Friday August 25, 2023 @ 11:59pm**'
+output:
+  html_document:
+    highlight: tango
+    theme: paper
+    toc: no
+---
+
+
+*****
+
+#### Grading
+
+Within each question, your grade will be based on:
+
+- Correctness and completeness of analysis
+
+- Appropriate usage of R data-structures and functions (including meaningful names for objects and code)
+
+- Clarity, correctness, and completeness 
+
+- Clarity of text (explanations, justifications, and interpretations)
+
+- Clarity of code/comments
+
+- Reproducibility and dynamic output using RMarkdown
+
+\vspace{5mm}
+
+
+##### **Total Points: 100 pts**
+
+-  <u> Problem 1:</u> (15 pts) 
+<br>
+
+- <u> Problem 2:</u> (30 pts) 
+<br>
+
+- <u> Problem 3:</u> (25 pts) 
+<br>
+
+- <u> Problem 4:</u> (25 pts) 
+<br>
+
+- <u> Clarity, Comments, Reproducibility:</u> (5 pts)
+
+
+
+\vspace{10mm}
+
+*****
+
+##### To complete the final, follow these steps:
+
+1. Download the `BIOSTAT306final.Rmd` file from Canvas.
+
+2. Open `BIOSTAT306final.Rmd` in RStudio.
+
+3. Replace the "Your Name Here" text in the `author:` field with your own name.
+
+4. Supply your solutions to the homework by editing `BIOSTAT306final.Rmd`.
+
+5. When you have completed the homework and have **checked** that your code 
+both runs in the Console and knits correctly when you click `Knit HTML`, rename 
+the R Markdown file to `BIOSTAT306final_YourNameHere.Rmd`, and submit on Canvas.  
+(YourNameHere should be changed to your own name.)
+
+##### Tips:
+
+* Run your code in the Console and Knit HTML frequently to check for errors!
+
+* You may find it easier to solve a problem by interacting only with the 
+Console at first. 
+
+* Instead of sending code line-by-line with `<ctrl-enter>`, you can send entire 
+code chunks, and even run all of the code chunks in your .Rmd file. Look under 
+the <Chunks> menu of the Source panel.
+
+##### **Important criteria!** 
+
+You must follow the **R Style Guide**.  This means, among other things:
+
+* Comment your code!
+
+* Indent your code when using curly braces!
+
+* Use `<-` for assignment (not `=`)!
+
+<br>
+
+**Print all your results in a statistical report fashion, using inline code when possible. You will be graded on this.**  
+
+<br>
+<br>
+
+
+
+
+
+
+
+
+***
+
+<!------------------------------------------->
+<!---------       Problem 1         --------->
+<!------------------------------------------->
+
+### Problem 1:  (15 pts)
+
+Time to invest and save some of your hard earned dollars so that later in life you can live and give like no one else! First, you need to understand the overall profit or loss per day of the week. The total daily profit is the sum of the profit/loss you realized per day.  
+
+
+##### (a) (2 pts)
+
+Assign the variable `total_daily` to how much you gained or lost on each day in total (RothIRA and work401K combined):  
+
+```{r}
+# Gain / Loss from Monday to Friday
+RothIRA_vector <- c(140, -60, 30, 120, 240)
+work401K_vector <- c(-28, -5, 100, 350, 15)
+days_vector <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+names(RothIRA_vector) <- days_vector
+names(work401K_vector) <- days_vector
+```  
+
+```{r}
+# Assign to total_daily how much you won / lost on each day
+total_daily <- RothIRA_vector + work401K_vector
+```
+
+
+
+##### (b) (2 pts)
+
+How did your investments perform this week? A net gain or a mix of good and bad days? Create variables `total_RothIRA` and `total_work401K` to see if you gained more than lost. 
+
+```{r}
+# Total earnings with RothIRA
+total_RothIRA <- sum(RothIRA_vector)
+
+# Total earnings with work401K
+total_work401K <- sum(work401K_vector)
+```
+
+
+
+
+##### (c) (2 pts)
+
+Which investment works better for you, RothIRA or work401K? Combine the totals `total_RothIRA` and `total_work401K` to get your `total_week` amount. 
+
+```{r}
+# Which worked better for you? Compare the gains between RothIRA and work401K. Describe, no need to formally test.
+
+# Total earnings overall
+total_week <- total_RothIRA + total_work401K
+```
+
+> RothIRA worked better for me, because total earnings with RothIRA are bigger than those with work401K.
+
+##### (d) (2 pts)
+
+How much did you earn/loose on Wednesday in RothIRA?
+
+```{r}
+RothIRAe_Wed <- RothIRA_vector[3]
+```
+
+
+
+##### (e) (2 pts)
+How was your Monday and Friday performance in RothIRA?
+```{r}
+RothIRA_MonFri <- RothIRA_vector[c(1,5)]
+```
+
+
+##### (f) (2 pts)
+Which days were best and worst in work401K? (hint: look into `which`). Create a named vector for these values. Make sure to name them so you know which is best and which is worst. 
+
+```{r}
+# Create a vector to store which day is the best and which day is the worst (e.g. Monday, Tuesday, Wednesday, Thursday, Friday) with meaningful names.
+work401K_BestWorst <- c(names(which(work401K_vector == max(work401K_vector))),
+                        names(which(work401K_vector == min(work401K_vector))))
+
+names(work401K_BestWorst) <- c("best", "worst")
+```
+
+
+
+##### (g) (3 pts)
+Which days did you make money (and how much) on work401K? Return both days and dollar amount.
+
+```{r}
+work401K_gains <- work401K_vector[which(work401K_vector > 0)]
+```
+
+
+
+
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+***
+
+
+
+<!------------------------------------------->
+<!---------       Problem 2         --------->
+<!------------------------------------------->
+
+
+### Problem 2: (30 pts)
+
+Recall the `veteranExample_Final.csv`. Download the `veteranExample_Final.csv` data and import into R to create a dataset called `TRIAL`. Assume each row is a unique subject.
+
+```{r message = FALSE}
+library(tidyverse)
+TRIAL <- read_csv("veteranExample_Final.csv")
+```
+
+
+##### (a) Create TRIAL2 by selecting all the data for respondents whose celltype is "smallcell" *and* whose age is greater than or equal to 60 years. Output data should include 31 rows and 5 columns. Using tidyverse create `TRIAL2`. Make sure to show tests/checks. (5 pts)
+
+```{r}
+# select data whose celltype is smallcell and whose age is greater than or equal to 60
+TRIAL2 <- TRIAL %>% 
+  filter(celltype == "smallcell" & age >= 60)
+
+# perform check
+nrow(TRIAL2)
+ncol(TRIAL2)
+```
+
+
+##### (b) Using the TRIAL2 data from 2a, provide the mean and standard deviation of age for each group, broken down by `prior`. Use tidyverse. Make sure the names are informative as usual. (5 pts)
+
+```{r}
+TRIAL2 %>%
+  group_by(prior) %>% # broken down by prior
+  summarise(age_mean = mean(age), 
+            age_sd = sd(age)) %>% # provide mean and sd of age
+  select("Prior" = prior, 
+         "Mean of Age" = age_mean, 
+         "SD of Age" = age_sd) # make names informative
+```
+
+
+##### (c) (5 pts)
+
+Manipulate the original `TRIAL` for this problem. For patients with "adeno" cell type (`celltype`) and "RT" prior therapy (`prior`), these patients also had Bev prior treatment. In conclusion, if a patient was "adeno" cell type *and* "RT" prior, they should be "RT + Bev" instead of only "RT". Do this using tidyverse to create the new variable dplyr_prior. You should end up with one new variable. Make sure to perform checks and verify it works (you will be graded on this)!
+
+**Note: for missing celltype, you should leave `prior` as is.**
+
+Using tidyverse to create `dplyr_prior`. Make sure to show tests/checks. 
+
+```{r}
+# create new variable
+TRIAL <- TRIAL %>%
+  mutate(dplyr_prior = if_else(celltype == "adeno" & prior == "RT", "RT + Bev", prior))
+
+# perform check
+TRIAL %>%
+  group_by(celltype, dplyr_prior) %>%
+  summarise()
+```
+
+
+
+##### (d)  (5 pts)
+
+Create another new variable `karno_flag` which denotes whether a patient had high, medium, or low Karnofsky performance score (`karno`). Use `karno` to create the new categorical variable `karno_flag`, categorized levels defined as high [100,70], medium (70, 30], and low (30, 0]. Ensure that the new variable is a factor. Use tidyverse. 
+
+```{r}
+# Create new variable
+TRIAL <- TRIAL %>%
+  mutate(karno_flag = case_when(karno >= 70 ~ "high",
+                                karno < 70 & karno >= 30 ~ "medium",
+                                karno < 30 ~ "low"))
+
+# ensure new variable is factor
+TRIAL$karno_flag <- factor(TRIAL$karno_flag)
+levels(TRIAL$karno_flag)
+```
+
+
+##### (e)  (10 pts)
+
+Using the data from part d, create a **publication ready** table by *dplyr_prior* you created in part c. *Note: prior transformation and data cleaning/transforming/factors may be needed.* Use tbl_summary and tidyverse.
+
+
+```{r}
+library(kableExtra)
+library(gtsummary)
+
+# create table
+tbl1 <- TRIAL %>%
+  select(-karno, -prior) %>%
+  tbl_summary(label = list(celltype ~ "Cell Type",
+                           time ~ "Time",
+                           age ~ "Age",
+                           karno_flag ~ "Karno Flag"),
+              by = dplyr_prior)
+
+tbl1 %>%
+  as_kable_extra(booktabs = TRUE, longtable = TRUE, linesep = "") %>%
+  kable_styling(latex_options = c("repeat_header"))
+```
+
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+***
+
+
+
+<!------------------------------------------->
+<!---------       Problem 3         --------->
+<!------------------------------------------->
+
+
+### Problem 3: (25 pts)
+
+$\chi^2$ and Fisher's exact test
+
+In this problem, we'll be working with data from a 1971 Canadian Census survey of occupations. The dataset contains average income (in 1971 dollars), average years of education, and the Pineo-Porter prestige score (from a social survey conducted in the mid-1960s) for professional, white-collar, and blue-collar jobs. It also includes whether the occupation was male-dominated in 1971, defined as whether the profession had lower than average proportion of women workers.
+
+Download from Canvas the file `prestige.csv` and read it into R using `read_csv`.  
+
+```{r message = FALSE}
+jobSurvey <- read_csv("prestige.csv")
+```
+
+
+
+##### (a) Tabulating the data (2 pts)
+
+Produce a table that cross-tabulates the job type (professional, white-collar, blue collar) *vs* whether or not the job was male-dominated.  Do these two variables appear independent based on the table?
+
+```{r}
+# Produce table
+table(jobSurvey$type, jobSurvey$maleDominated)
+```
+
+> These 2 variables do not appear independent based on the table.
+
+
+
+##### (b)  Generating expected counts (4 pts)
+
+In R, write a function that takes in a table (such as the one you produced in part (a) above) and computes the **expected** counts for the $\chi^2$ test based on the row and column sums of the table.  
+
+**Hint 1**: the builtin functions `colSums()` and `rowSums()` and `sum` may be helpful.
+
+**Hint 2**: Formula for Expected Cell Frequency = (Row Total * Column Total)/N.
+
+**Hint 3**: the builtin function `outer` takes in two vectors and a function, and applies that function to each pair of elements from each vector.  For example, `outer(x, y, FUN="*")` will return a matrix where the `[1,1]` element is the first element of `x` multiplied by the first element of `y`; the `[1,2]` element is the the first element of `x` multiplied by the second element of `y`;  the `[2,1]` element is the the second element of `x` multiplied by the first element of `y`, and so forth.  Here's a demonstration:
+
+```{r}
+x <- 1:4
+y <- 3:5
+outer(x, y, FUN = "*")
+```
+
+```{r}
+# write function that takes in table and computes expected counts for chi^2 test
+exp_chi_sq <- function(obs) {
+  return(outer(rowSums(obs), colSums(obs), FUN = "*") / sum(obs))
+}
+```
+
+
+
+##### (c) Writing a function for the $\chi^2 test$ (10 pts)
+
+Write a function called `myChisqTest` that takes in a table (such as the one you produced in part (a) above) and calls the function that you wrote in part (b) above to output a list with the following elements:
+
+  - `output$statistic` = the $\chi^2$ statistic for the table ($\sum (observed - expected)^2 / expected$)
+  - `output$df` = the appropriate degrees of freedom for the $\chi^2$ test ((#rows-1)*(#cols-1)), and
+  - `output$p.value` = the $p$-value testing the null hypothesis that contingency table is the product of the row and column marginals.  
+  
+**NOTE** You *must* use the appropriate R distribution function to obtain the $p$-value (not `chisq.test`)!  
+
+```{r}
+myChisqTest <- function(obs) {
+  exp <- exp_chi_sq(obs) # expected table
+  stat <- sum((obs - exp) ^ 2 / exp) # chi ^ 2 statistic
+  df <- (nrow(obs) - 1) * (ncol(obs) - 1) # df
+  p_val <- 1 - pchisq(stat, df) # p-value
+  return(list(statistic = stat, 
+              df = df, 
+              p.value = p_val))
+}
+```
+
+
+
+##### (d) $\chi^2$ tests using the builtin `chisq.test` (5 pts)
+
+Apply the `myChisqTest` function you wrote in part (c) to the table you obtained in part (a) to test whether job-type and male-dominated are independent.  Then use the built-in function `chisq.test` to test the same thing.  Do you obtain the same answers?  If not, why not?  Debug and verify your answers to the best of your ability.
+
+```{r}
+# test independence
+myChisqTest(table(jobSurvey$type, jobSurvey$maleDominated))
+chisq.test(table(jobSurvey$type, jobSurvey$maleDominated))
+```
+
+> Set alpha = 0.05. Since p-value = 0.0045 < alpha, we reject the null hypothesis that job-type and male-dominated are independent. I obtain the same answers.
+
+
+##### (e) Using Fisher's exact test  (4 pts)
+
+Read the help page for `fisher.test()` to apply it here.  How does the result compare to what you obtained in part (d)?  Comment on any differences.
+
+```{r}
+# test independence
+fisher.test(table(jobSurvey$type, jobSurvey$maleDominated))
+```
+
+> The p-value in fisher's test is larger than that in chi ^ 2 test.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+***
+
+
+<!------------------------------------------->
+<!---------       Problem 4         --------->
+<!------------------------------------------->
+
+
+### Problem 4: (25 pts)
+
+##### (a) (5 pts)
+
+Using the `prestige.csv` data from problem 3 and ggplot2, create a bar plot for whether or not the job was male-dominated `maleDominated` by job type (professional, white-collar, blue-collar) `type`. Create the plot so that the bars are next to each other *dodge*. Don't forget labels and titles!
+
+**Hint: First edit the data in order to present informative levels and names on the plot**. You can include missing values or exclude missing values, either way is fine.
+
+```{r}
+library(ggplot2)
+
+# present informative levels and names
+jobSurvey2 <- jobSurvey %>%
+  mutate(type = case_when(type == "bc" ~ "blue-collar",
+                          type == "prof" ~ "professional",
+                          type == "wc" ~ "white-collar")) %>%
+  select(job, prestige, education, income, 
+         "job_type" = type, 
+         "male_dominated" = maleDominated)
+
+# create bar plot
+ggplot(data = jobSurvey2, 
+       aes(x = male_dominated, 
+           fill = job_type)) +
+  geom_bar(position = "dodge") + 
+  labs(title = "bar plot for male-dominated by job-type") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+##### (b) (5 pts)
+
+Using tidyverse, create categorical income variable, `cat_income`, which you should add to your dataset from part a.  Define `cat_income` to look at categorical income (Low (<= 2500),  Medium (2500 to 5000), High (> 5000)). Your categorical variable should have three levels of Low, Medium, High. 
+
+```{r}
+# create income variable
+jobSurvey2 <- jobSurvey2 %>%
+  mutate(cat_income = case_when(income <= 2500 ~ "low",
+                                income > 2500 & income <= 5000 ~ "medium",
+                                income > 5000 ~ "high"))
+
+# perform check
+jobSurvey2$cat_income <- factor(jobSurvey2$cat_income)
+levels(jobSurvey2$cat_income)
+```
+
+
+##### (c) (5 pts)
+
+Edit your answer from part a, to now look at the bar plot for categorical income (Low, Medium, High) which you derived in part b. Create multi-panel using `cat_income`. The bar plot will be Male-Dominated status by Job Type and categorical Income. 
+
+
+```{r}
+# create bar plot
+ggplot(data = jobSurvey2, 
+       aes(x = male_dominated, 
+           fill = job_type)) +
+  facet_wrap( ~ cat_income) +
+  geom_bar(position = "dodge") + 
+  labs(title = "bar plot for male-dominated by job-type") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+##### (d) (10 pts)
+
+Create a scatter plot to look at continuous income and education, where you include information on which `job` (as text of the points) where the text size corresponds to income (continuous), as well as the color to denote job type `type`. Note the income will automatically create text sizes from the continuous income variable.
+
+Comment on any trends you see in the data.
+
+**Be sure to include informative labels, legend, title as always**
+
+```{r}
+# Create scatter plot
+ggplot(data = jobSurvey2, 
+       aes(x = education, 
+           y = income, 
+           color = job_type, 
+           label = job)) +
+  geom_point() +
+  geom_text(size = jobSurvey2$income / max(jobSurvey2$income) * 10) +
+  labs(title = "scatter plot for income and education") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+> I see that those with higher education level usually have higher income.
+
+
+
+
+
+
+
+
+
+
+

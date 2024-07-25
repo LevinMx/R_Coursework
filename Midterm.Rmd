@@ -1,0 +1,331 @@
+---
+title: |
+  | BIOSTAT 306 R Programming
+  | Midterm
+author: Minxing Huang
+date: 'Due: **Mon July 24, 2023 @ 9am**'
+output:
+  html_document:
+    highlight: tango
+    theme: paper
+    toc: no
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+<br>
+<br>
+
+*****
+
+
+#### Grading
+
+Within each question, your grade will be based on:
+
+- Correctness and completeness of analysis
+
+- Appropriate usage of R data-structures and functions (including meaningful names for objects and code)
+
+- Clarity, correctness, and completeness 
+
+- Clarity of text (explanations, justifications, and interpretations)
+
+- Clarity of code/comments
+
+- Reproducibility and dynamic output using RMarkdown
+
+\vspace{5mm}
+
+
+##### **Total Points: 100 pts**
+
+-  <u> Problem 1:</u> (15 pts) 
+<br>
+
+- <u> Problem 2:</u> (20 pts) 
+<br>
+
+- <u> Problem 3:</u> (30 pts) 
+<br>
+
+- <u> Problem 4:</u> (30 pts) 
+<br>
+
+- <u> Clarity, Comments, Reproducibility:</u> (5 pts)
+
+
+\vspace{10mm}
+
+*****
+
+##### To complete the midterm, follow these steps:
+
+1. Download the `BIOSTAT306midterm.Rmd` file from Canvas.
+
+2. Open `BIOSTAT306midterm.Rmd` in RStudio.
+
+3. Replace the "Your Name Here" text in the `author:` field with your own name.
+
+4. Supply your solutions to the homework by editing `BIOSTAT306midterm.Rmd`.
+
+5. When you have completed the homework and have **checked** that your code 
+both runs in the Console and knits correctly when you click `Knit HTML`, rename 
+the R Markdown file to `BIOSTAT306midterm_YourNameHere.Rmd`, and submit on Canvas.  
+(YourNameHere should be changed to your own name.)
+
+##### Tips:
+
+* Run your code in the Console and Knit HTML frequently to check for errors!
+
+* You may find it easier to solve a problem by interacting only with the 
+Console at first. 
+
+* Instead of sending code line-by-line with `<ctrl-enter>`, you can send entire 
+code chunks, and even run all of the code chunks in your .Rmd file. Look under 
+the <Chunks> menu of the Source panel.
+
+##### **Important criteria!** 
+
+You must follow the **R Style Guide**.  This means, amongst other things:
+
+* Comment your code!
+
+* Indent your code when using curly braces!
+
+* Use `<-` for assignment (not `=`)!
+
+**You will be graded on this.**  Unreadable code will earn a 0.
+
+<br>
+<br>
+
+
+
+
+
+
+
+
+***
+
+<!------------------------------------------->
+<!---------       Problem 1         --------->
+<!------------------------------------------->
+
+### Problem 1: (15 pts)
+
+ __Tip!__  *Note: Be sure to check that your answer makes sense. Do this by trying it out in the console with various choices of values for the variable `x`.* 
+
+
+
+##### (a) Checking inequality. (5 pts)
+
+Given a variable `x`, write a Boolean expression that evaluates to `TRUE` if 
+the variable `x` is *not* `NA` (i.e., is not missing).
+
+```{r}
+x <- 5
+!is.na(x)
+```
+
+##### (b) Checking if a number is in a given range. (5 pts)
+
+Given a (possibly negative) number `x`, write a Boolean expression that returns 
+`TRUE` if and only if `x` is smaller than `-12` or bigger than `29`.  
+
+```{r}
+x <- -15
+x < -12 | x > 29
+```
+
+##### (c) A more complicated example. (5 pts)
+
+Given an integer number `x`, write a Boolean expression that returns `TRUE` if 
+and only if `x` is an **odd** number between -8 and 12 or 100 and 150.  
+
+```{r}
+x <- 5
+x %% 2 == 1 & ((x >= -8 & x <= 12) | (x >= 100 & x <= 150))
+```
+
+**Hint**: The quotient operator `%/%` and modulus operator `%%` give the 
+integer division quotient and remainder of their operands, respectively.  
+That is, for integers `x` and `y`, `x %/% y` is the whole part of `x` 
+divided by `y`, while `x %% y` is the remainder.  
+For example: `7 %/% 3` gives 2, while  `7 %% 3` gives 1.
+
+
+<br>
+<br>
+
+
+***
+
+
+
+
+
+
+<!------------------------------------------->
+<!---------       Problem 2         --------->
+<!------------------------------------------->
+
+
+### Problem 2: (20 pts)
+
+The data for problem 2, 3, and 4 "veteranExample.csv" is a shortened version of the veteran data from the survival package. If you run the code library(survival) and then ?veteran you will be able to see details on the data. 
+
+##### (a) Importing data. Download the `veteranExample.csv` data and import into R to create a dataset called `TRIAL`. Assume each row is a unique subject. (5 pts)
+
+```{r}
+library(survival) # use to get information on ?veteran data
+TRIAL <- read.csv("veteranExample.csv") # import data
+```
+
+
+##### (b) How many unique cell types (`celltype`) are reported in the data? What are they? (5 pts)
+
+```{r}
+x <- unique(TRIAL$celltype) # unique cell types
+length(x) # count number of unique cell types
+x 
+```
+
+
+##### (c) Determine the frequency of each unique value of cell type in the data, including how many are NA. (5 pts)
+
+```{r}
+table(TRIAL$celltype, useNA = "always") # frequency of each unique value of cell type
+```
+
+
+##### (d) Replace all occurrences of ???? in the paragraph below with an inline code chunk supplying the appropriate information in `'r codehere'`. Note you may need to test and run the code and assign it to an object prior to including it in the inline code. (5 pts)
+
+```{r}
+x <- length(unique(TRIAL$celltype)) # count number of unique cell types
+y <- sum(is.na(TRIAL$celltype)) / length(TRIAL$celltype) * 100 # proportion of NAs
+```
+
+
+> There are `r x` unique cell types. `r y`% of subjects were missing cell type.
+
+
+
+
+<br>
+<br>
+
+***
+
+
+
+
+
+<!------------------------------------------->
+<!---------       Problem 3         --------->
+<!------------------------------------------->
+
+
+### Problem 3: (30 pts)
+
+##### (a) Using the `TRIAL` data from problem 2, create a new dataset which is a subset of `TRIAL` called `ChemoDat` which only includes subjects with prior treatment (`prior`) "Chemo". Make sure to verify things worked correctly using code. Use tidyverse. (10 pts)
+
+```{r}
+library(tidyverse) # load tidyverse
+ChemoDat <- TRIAL %>%
+  dplyr::filter(prior == "Chemo") # select subjects with prior treatment "Chemo"
+
+table(ChemoDat$prior) # verification
+```
+
+
+
+##### (b) Using the data from part a `ChemoDat`, select the trt, celltype, time, and status renaming all the variables to more meaningful and manuscript ready names. Make sure to include the units for time in the name which are minutes. Verify it worked as expected using code. (10 pts)
+
+```{r}
+ChemoDatSub <- ChemoDat %>%
+  dplyr::select("Treatment" = trt,
+                "Cell Type" = celltype,
+                "Survival Time (Minutes)" = time,
+                "Censoring Status" = status) # select and rename the variables
+
+summary(ChemoDatSub) # verification
+```
+
+
+
+##### (c) Using the `ChemoDat` data from 3a, transform the time variable into hours instead of minutes. Then provide the mean and standard deviation of the time in hours "Time (Hours)" for each group, broken down by celltype and treatment. Use tidyverse. Make sure the names are informative as usual. Note, you should not remove the NAs. It is not required to show NAs in the output but you should not remove them. (10 pts)
+
+```{r}
+ChemoDat %>%
+  dplyr::mutate(time = time / 60) %>% # create the variable of time in hours
+  
+  dplyr::group_by(celltype, trt) %>% # break down by cell type and treatment
+  
+  dplyr::summarise(time_hours_mean = mean(time),
+                   time_hours_sd = sd(time)) %>% # calculate the mean and SD of time in hours
+  
+  dplyr::select("Treatment" = trt,
+                "Cell Type" = celltype,
+                "Mean of Survival Time (Hours)" = time_hours_mean,
+                "SD of Survival Time (Hours)" = time_hours_sd) # rename variables to make them informative
+```
+
+
+
+
+
+<br>
+<br>
+
+***
+
+
+
+
+<!------------------------------------------->
+<!---------       Problem 4         --------->
+<!------------------------------------------->
+
+
+### Problem 4: (30 pts)
+
+##### (a) Using the `TRIAL` data from problem 2, create a **publication ready** table by prior therapy. *Note: prior transformation and data cleaning/transforming/factors may be needed.* Use tbl_summary and tidyverse. (15 pts)
+
+```{r}
+library(gtsummary)
+TRIAL_TBL <- TRIAL %>%
+  dplyr::mutate(trt = if_else(trt == 1, "standard", "test")) %>% # make values more informative
+  dplyr::select(colnames(TRIAL)) %>% # select all columns
+  tbl_summary(missing_text = "Missing",
+              
+              label = list(trt ~ "Treatment",
+                           celltype ~ "Cell Type",
+                           time ~ "Survival Time",
+                           status ~ "Censoring Status",
+                           karno ~ "Karnofsky Performance Score",
+                           age ~ "Age"), # set labels
+              
+              by = prior) # stratified by prior therapy
+
+TRIAL_TBL %>%
+  as_kable_extra(booktabs = TRUE, longtable = TRUE, linesep = "") %>%
+  kableExtra::kable_styling(latex_options = c("repeat_header"))
+```
+
+
+
+##### (b) Add an overall summary column and p-values to your table. The order of columns should be as follows: Chemotherapy, RT, p-value, Overall. Use tbl_summary and tidyverse. (15 pts)
+
+```{r}
+TRIAL_TBL %>%
+  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2)) %>% # add p-value
+  add_overall(last = TRUE) %>% # add an overall column in the last
+  as_kable_extra(booktabs = TRUE, longtable = TRUE, linesep = "") %>%
+  kableExtra::kable_styling(latex_options = c("repeat_header"))
+```
+
+
+
